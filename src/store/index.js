@@ -27,6 +27,7 @@ export default new Vuex.Store({
 
   actions: {
     fetchTodos: async ({ commit }) => {
+      console.log('Fetching todos');
       const todos = await ls.getItem('todos');
       commit('SET_TODOS', todos ? JSON.parse(todos) : []);
     },
@@ -36,10 +37,18 @@ export default new Vuex.Store({
       dispatch('saveTodos');
     },
 
+    updateTodo: async ({ commit, dispatch }, todo) => {
+      await commit('UPDATE_TODO', todo);
+      dispatch('saveTodos');
+    },
+
     deleteTodo: async ({ commit, dispatch }, id) => {
       await commit('DELETE_TODO', id);
       dispatch('saveTodos');
     },
+
+    addNote: async ({ commit, dispatch }, note) => {
+      await commit('ADD_NOTE', note);
       dispatch('saveTodos');
     },
 
