@@ -63,5 +63,7 @@ export default new Vuex.Store({
     },
   },
 
-  getters: {},
+  getters: {
+    parents: state => state.todos.filter(todo => !todo.parent),
+  },
 });
