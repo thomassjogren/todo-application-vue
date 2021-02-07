@@ -9,7 +9,13 @@
     </form>
 
     <ul>
-      <li v-for="(todo, index) in todos" :key="index">{{ todo.title }}<br />{{ todo.description }}</li>
+      <li v-for="todo in todos" :key="todo.id">
+        {{ todo.title }}<br />{{ todo.description }}<br />{{ todo.id }}<br />
+        <button @click="toggleEdit">Edit</button>
+        <button @click="createNote">Note</button>
+        <button @click="addSubTodo">+</button>
+        <button @click="deleteTodo(todo.id)">X</button>
+      </li>
     </ul>
 
     <button @click="resetStorage">Reset Storage</button>
@@ -38,17 +44,25 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchTodos', 'addTodo', 'resetStorage']),
+    ...mapActions(['fetchTodos', 'addTodo', 'resetStorage', 'deleteTodo']),
 
     save() {
       this.addTodo({
         title: this.title,
         description: this.description,
+        priority: 0,
+        parent: null,
       });
 
       this.title = '';
       this.description = '';
     },
+
+    toggleEdit() {},
+
+    createNote() {},
+
+    addSubTodo() {},
   },
 };
 </script>
