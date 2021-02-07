@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { nanoid } from 'nanoid';
 
 Vue.use(Vuex);
 
@@ -27,7 +28,7 @@ export default new Vuex.Store({
     },
 
     addTodo: async ({ commit, dispatch }, todo) => {
-      await commit('ADD_TODO', todo);
+      await commit('ADD_TODO', { id: nanoid(), ...todo });
       dispatch('saveTodos');
     },
 
