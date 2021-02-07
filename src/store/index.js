@@ -16,7 +16,11 @@ export default new Vuex.Store({
 
     ADD_TODO: (state, payload) => state.todos.push(payload),
 
-    REMOVE_TODO: (state, payload) => state.todos.splice(state.todos.indexOf(payload), 1),
+    DELETE_TODO: (state, payload) =>
+      state.todos.splice(
+        state.todos.find(todo => todo.id === payload),
+        1,
+      ),
 
     RESET_STORAGE: state => (state.todos = []),
   },
@@ -32,8 +36,10 @@ export default new Vuex.Store({
       dispatch('saveTodos');
     },
 
-    removeTodo: async ({ commit, dispatch }, todo) => {
-      await commit('REMOVE_TODO', todo);
+    deleteTodo: async ({ commit, dispatch }, id) => {
+      await commit('DELETE_TODO', id);
+      dispatch('saveTodos');
+    },
       dispatch('saveTodos');
     },
 
