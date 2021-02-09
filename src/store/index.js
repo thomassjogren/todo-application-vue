@@ -16,11 +16,13 @@ export default new Vuex.Store({
 
     ADD_TODO: (state, payload) => state.todos.push(payload),
 
+    UPDATE_TODO: (state, payload) => {
+      state.todos.splice(state.todos.indexOf(state.todos.find(todo => todo.id === payload.id)), 1);
+      state.todos.push(payload);
+    },
+
     DELETE_TODO: (state, payload) =>
-      state.todos.splice(
-        state.todos.find(todo => todo.id === payload),
-        1,
-      ),
+      state.todos.splice(state.todos.indexOf(state.todos.find(todo => todo.id === payload)), 1),
 
     RESET_STORAGE: state => (state.todos = []),
   },
@@ -65,5 +67,11 @@ export default new Vuex.Store({
 
   getters: {
     parents: state => state.todos.filter(todo => !todo.parent),
+
+    parentsWithChilds: state => {
+      const parents = state.todos.filter(todo => !todo.parent);
+      parents.forEach(p => (p.children = state.todos.filter(t => t.parent === p.id)));
+      return parents;
+    },
   },
 });
