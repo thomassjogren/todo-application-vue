@@ -1,19 +1,11 @@
 <template>
   <transition name="fade">
     <div v-show="open" class="base-modal">
-      <div
-        v-if="overlay"
-        class="base-modal__overlay"
-        @click="clickOutside && close()"
-      />
+      <div v-if="overlay" class="base-modal__overlay" @click="clickOutside && close()" />
       <transition name="fade">
         <div v-if="open" class="base-modal__container" :style="computedStyles">
           <div class="base-modal__content">
-            <button
-              v-if="closeButton"
-              class="btn close-button"
-              @click.stop="close"
-            >
+            <button v-if="closeButton" class="btn close-button" @click.stop="close">
               <i class="fa fa-times" />
             </button>
             <h4 v-if="$slots.title" class="base-modal__title">
