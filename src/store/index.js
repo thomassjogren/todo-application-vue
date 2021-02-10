@@ -9,6 +9,8 @@ const ls = window.localStorage;
 export default new Vuex.Store({
   state: {
     todos: [],
+
+    comments: [],
   },
 
   mutations: {
@@ -16,15 +18,66 @@ export default new Vuex.Store({
 
     ADD_TODO: (state, payload) => state.todos.push(payload),
 
+    COMPLETE_TODO: (state, { id, completed }) => {
+      const todo = state.todos.find(todo => todo.id === id);
+      Vue.set(todo, 'completed', completed);
+    },
+
     UPDATE_TODO: (state, payload) => {
-      state.todos.splice(state.todos.indexOf(state.todos.find(todo => todo.id === payload.id)), 1);
+      state.todos.splice(
+        state.todos.indexOf(state.todos.find(todo => todo.id === payload.id)),
+        1,
+      );
       state.todos.push(payload);
     },
 
-    DELETE_TODO: (state, payload) =>
-      state.todos.splice(state.todos.indexOf(state.todos.find(todo => todo.id === payload)), 1),
+    UPDATE_PRIORITY: (state, { id, priority }) => {
+      const todo = state.todos.find(todo => todo.id === id);
+      Vue.set(todo, 'priority', priority);
+    },
 
-    RESET_STORAGE: state => (state.todos = []),
+    DELETE_TODO: (state, { id, convertChildren }) => {
+      const todo = state.todos.find(todo => todo.id === id);
+      state.todos.splice(state.todos.indexOf(todo), 1);
+
+      // Handle subtasks
+      const children = state.todos.filter(todo => todo.parent === id);
+      if (children.length) {
+        if (convertChildren) {
+          children.forEach(child => Vue.set(child, 'parent', null));
+          return;
+        }
+
+        children.forEach(child =>
+          state.todos.splice(state.todos.indexOf(child), 1),
+        );
+      }
+
+      // Delete comments
+      const comments = state.comments.filter(comment => comment.parent === id);
+      if (comments.length) {
+        comments.forEach(comment =>
+          state.comments.splice(state.comments.indexOf(comment), 1),
+        );
+      }
+    },
+
+    RESET_STORAGE: state => {
+      state.todos = [];
+      state.comments = [];
+    },
+
+    SET_COMMENTS: (state, payload) => (state.comments = payload),
+
+    ADD_COMMENT: (state, payload) => state.comments.push(payload),
+
+    DELETE_COMMENT: (state, payload) =>
+      state.comments.splice(
+        state.comments.indexOf(
+          state.comments.find(comment => comment.id === payload),
+        ),
+        1,
+      ),
   },
 
   actions: {
@@ -39,19 +92,25 @@ export default new Vuex.Store({
       dispatch('saveTodos');
     },
 
+    completeTodo: async ({ commit, dispatch }, payload) => {
+      await commit('COMPLETE_TODO', payload);
+      dispatch('saveTodos');
+    },
+
     updateTodo: async ({ commit, dispatch }, todo) => {
       await commit('UPDATE_TODO', todo);
+      dispatch('saveTodos');
+    },
+
+    updatePriority: async ({ commit, dispatch }, payload) => {
+      await commit('UPDATE_PRIORITY', payload);
       dispatch('saveTodos');
     },
 
     deleteTodo: async ({ commit, dispatch }, id) => {
       await commit('DELETE_TODO', id);
       dispatch('saveTodos');
-    },
-
-    addNote: async ({ commit, dispatch }, note) => {
-      await commit('ADD_NOTE', note);
-      dispatch('saveTodos');
+      dispatch('saveComments');
     },
 
     saveTodos: async ({ state }) => {
@@ -61,16 +120,57 @@ export default new Vuex.Store({
 
     resetStorage: async ({ commit }) => {
       await ls.removeItem('todos');
+      await ls.removeItem('comments');
       commit('RESET_STORAGE');
+    },
+
+    fetchComments: async ({ commit }) => {
+      console.log('Fetching comments');
+      const comments = await ls.getItem('comments');
+      commit('SET_COMMENTS', comments ? JSON.parse(comments) : []);
+    },
+
+    addComment: async ({ commit, dispatch }, comment) => {
+      await commit('ADD_COMMENT', {
+        id: nanoid(),
+        timestamp: new Date(),
+        ...comment,
+      });
+      dispatch('saveComments');
+    },
+
+    deleteComment: async ({ commit, dispatch }, id) => {
+      await commit('DELETE_COMMENT', id);
+      dispatch('saveComments');
+    },
+
+    saveComments: async ({ state }) => {
+      console.log('Save comments');
+      await ls.setItem('comments', JSON.stringify(state.comments));
     },
   },
 
   getters: {
-    parents: state => state.todos.filter(todo => !todo.parent),
+    parents: state => {
+      const parents = state.todos
+        .filter(todo => !todo.parent)
+        .map(a => ({ ...a }));
+      parents.sort((a, b) => {
+        return b.priority - a.priority;
+      });
+      parents.forEach(p => {
+        Vue.set(
+          p,
+          'children',
+          state.todos.filter(t => t.parent === p.id),
+        );
 
-    parentsWithChilds: state => {
-      const parents = state.todos.filter(todo => !todo.parent);
-      parents.forEach(p => (p.children = state.todos.filter(t => t.parent === p.id)));
+        Vue.set(
+          p,
+          'comments',
+          state.comments.filter(t => t.parent === p.id),
+        );
+      });
       return parents;
     },
   },
