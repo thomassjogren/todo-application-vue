@@ -18,16 +18,13 @@ export default new Vuex.Store({
 
     ADD_TODO: (state, payload) => state.todos.push(payload),
 
-    COMPLETE_TODO: (state, { id, completed }) => {
-      const todo = state.todos.find(todo => todo.id === id);
-      Vue.set(todo, 'completed', completed);
+    COMPLETE_TODO: (state, payload) => {
+      const todo = state.todos.find(todo => todo.id === payload);
+      Vue.set(todo, 'completed', !todo.completed);
     },
 
     UPDATE_TODO: (state, payload) => {
-      state.todos.splice(
-        state.todos.indexOf(state.todos.find(todo => todo.id === payload.id)),
-        1,
-      );
+      state.todos.splice(state.todos.indexOf(state.todos.find(todo => todo.id === payload.id)), 1);
       state.todos.push(payload);
     },
 
@@ -48,17 +45,13 @@ export default new Vuex.Store({
           return;
         }
 
-        children.forEach(child =>
-          state.todos.splice(state.todos.indexOf(child), 1),
-        );
+        children.forEach(child => state.todos.splice(state.todos.indexOf(child), 1));
       }
 
       // Delete comments
       const comments = state.comments.filter(comment => comment.parent === id);
       if (comments.length) {
-        comments.forEach(comment =>
-          state.comments.splice(state.comments.indexOf(comment), 1),
-        );
+        comments.forEach(comment => state.comments.splice(state.comments.indexOf(comment), 1));
       }
     },
 
@@ -72,12 +65,7 @@ export default new Vuex.Store({
     ADD_COMMENT: (state, payload) => state.comments.push(payload),
 
     DELETE_COMMENT: (state, payload) =>
-      state.comments.splice(
-        state.comments.indexOf(
-          state.comments.find(comment => comment.id === payload),
-        ),
-        1,
-      ),
+      state.comments.splice(state.comments.indexOf(state.comments.find(comment => comment.id === payload)), 1),
   },
 
   actions: {
@@ -152,9 +140,28 @@ export default new Vuex.Store({
 
   getters: {
     parents: state => {
-      const parents = state.todos
-        .filter(todo => !todo.parent)
-        .map(a => ({ ...a }));
+      const parents = state.todos.filter(todo => !todo.parent && !todo.completed).map(a => ({ ...a }));
+      parents.sort((a, b) => {
+        return b.priority - a.priority;
+      });
+      parents.forEach(p => {
+        Vue.set(
+          p,
+          'children',
+          state.todos.filter(t => t.parent === p.id),
+        );
+
+        Vue.set(
+          p,
+          'comments',
+          state.comments.filter(t => t.parent === p.id),
+        );
+      });
+      return parents;
+    },
+
+    completed: state => {
+      const parents = state.todos.filter(todo => !todo.parent && todo.completed).map(a => ({ ...a }));
       parents.sort((a, b) => {
         return b.priority - a.priority;
       });

@@ -8,14 +8,20 @@
       <button type="submit">Save</button>
     </form>
 
-    <TodoList />
+    <TodoList :todos="parents" />
 
+    <div v-if="showCompleted">
+      Completed
+      <TodoList :todos="completed" />
+    </div>
+
+    <button @click="showCompleted = !showCompleted">Toggle completed</button>
     <button @click="resetStorage">Reset Storage</button>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 import TodoList from '@/components/TodoList';
 
@@ -30,7 +36,12 @@ export default {
     return {
       title: '',
       subtitle: '',
+      showCompleted: false,
     };
+  },
+
+  computed: {
+    ...mapGetters(['parents', 'completed']),
   },
 
   beforeMount() {

@@ -1,16 +1,12 @@
 <template>
-  <ul>
-    <TodoItem
-      v-for="todo in parents"
-      :key="todo.id"
-      :todo="todo"
-      @action="performAction"
-    />
+  <div v-if="!todos.length">No items yet</div>
+  <ul v-else>
+    <TodoItem v-for="todo in todos" :key="todo.id" :todo="todo" @action="performAction" />
   </ul>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 import TodoItem from '@/components/TodoItem';
 
@@ -21,13 +17,17 @@ export default {
     TodoItem,
   },
 
-  computed: {
-    ...mapGetters(['parents']),
+  props: {
+    todos: {
+      type: Array,
+      required: true,
+    },
   },
 
   methods: {
     ...mapActions([
       'addTodo',
+      'completeTodo',
       'updateTodo',
       'updatePriority',
       'deleteTodo',

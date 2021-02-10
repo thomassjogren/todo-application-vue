@@ -2,7 +2,10 @@
   <li>
     <p>
       <input v-if="edit" v-model="title" />
-      <template v-else><input type="checkbox" />{{ todo.title }}</template>
+      <template v-else>
+        <input type="checkbox" :checked="todo.completed" @click="completeTodo(todo.id)" />
+        {{ todo.title }}
+      </template>
     </p>
     <p>
       <input v-if="edit" v-model="subtitle" />
@@ -21,10 +24,9 @@
     <div v-if="hasChildren">
       <ul>
         <li v-for="subtask in todo.children" :key="subtask.id">
-          <input type="checkbox" /> {{ subtask.title }}
-          <button @click="deleteTodo(subtask.id)">
-            <i class="fas fa-trash" /> Delete
-          </button>
+          <input type="checkbox" :checked="subtask.completed" @click="completeTodo(subtask.id)" />
+          {{ subtask.title }}
+          <button @click="deleteTodo(subtask.id)"><i class="fas fa-trash" /> Delete</button>
         </li>
       </ul>
     </div>
@@ -32,9 +34,7 @@
     <div v-if="hasComments">
       <p v-for="comment in sortedComments" :key="comment.id">
         {{ formatDate(comment.timestamp) }} - {{ comment.content }}
-        <button @click="deleteComment(comment.id)">
-          <i class="fas fa-times" /> Delete
-        </button>
+        <button @click="deleteComment(comment.id)"><i class="fas fa-times" /> Delete</button>
       </p>
     </div>
 
@@ -42,13 +42,9 @@
       <template v-if="edit"><i class="fas fa-save" /> Save</template>
       <template v-else><i class="fas fa-edit" /> Edit</template>
     </button>
-    <button @click="createComment">
-      <i class="fas fa-sticky-note" /> Add comment
-    </button>
+    <button @click="createComment"><i class="fas fa-sticky-note" /> Add comment</button>
     <button @click="addSubTodo"><i class="fas fa-plus" /> Add subtask</button>
-    <button @click="deleteTodo(todo.id)">
-      <i class="fas fa-trash" /> Delete
-    </button>
+    <button @click="deleteTodo(todo.id)"><i class="fas fa-trash" /> Delete</button>
     <div v-if="subTodo">
       <label for="title">Title</label>
       <input id="title" v-model="subTitle" type="text" />
@@ -56,17 +52,10 @@
       <button @click="addSubTodo"><i class="fas fa-times" /> Cancel</button>
     </div>
 
-    <BaseModal
-      :open="showComment"
-      click-outside
-      close-button
-      @hide="createComment"
-    >
+    <BaseModal :open="showComment" click-outside close-button @hide="createComment">
       <div>
         <textarea v-model="commentContent"></textarea>
-        <button @click="addComment">
-          <i class="fas fa-save" /> Save comment
-        </button>
+        <button @click="addComment"><i class="fas fa-save" /> Save comment</button>
       </div>
     </BaseModal>
   </li>
@@ -141,6 +130,13 @@ export default {
         });
       }
       this.edit = !this.edit;
+    },
+
+    completeTodo(id) {
+      this.$emit('action', {
+        action: 'completeTodo',
+        payload: id,
+      });
     },
 
     createComment() {
