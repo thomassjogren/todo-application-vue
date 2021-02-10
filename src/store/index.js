@@ -33,7 +33,7 @@ export default new Vuex.Store({
       Vue.set(todo, 'priority', priority);
     },
 
-    DELETE_TODO: (state, { id, convertChildren }) => {
+    DELETE_TODO: (state, { id, convertChildren = false }) => {
       const todo = state.todos.find(todo => todo.id === id);
       state.todos.splice(state.todos.indexOf(todo), 1);
 
@@ -42,10 +42,9 @@ export default new Vuex.Store({
       if (children.length) {
         if (convertChildren) {
           children.forEach(child => Vue.set(child, 'parent', null));
-          return;
+        } else {
+          children.forEach(child => state.todos.splice(state.todos.indexOf(child), 1));
         }
-
-        children.forEach(child => state.todos.splice(state.todos.indexOf(child), 1));
       }
 
       // Delete comments

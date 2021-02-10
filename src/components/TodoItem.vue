@@ -180,7 +180,7 @@ export default {
         action: 'deleteTodo',
         payload: {
           id,
-          convertChildren: true,
+          convertChildren: false,
         },
       });
     },
