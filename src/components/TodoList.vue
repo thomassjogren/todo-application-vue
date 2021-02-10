@@ -1,6 +1,11 @@
 <template>
   <ul>
-    <TodoItem v-for="todo in parentsWithChilds" :key="todo.id" :todo="todo" @action="performAction" />
+    <TodoItem
+      v-for="todo in parents"
+      :key="todo.id"
+      :todo="todo"
+      @action="performAction"
+    />
   </ul>
 </template>
 
@@ -17,11 +22,18 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['parentsWithChilds']),
+    ...mapGetters(['parents']),
   },
 
   methods: {
-    ...mapActions(['addTodo', 'deleteTodo', 'updateTodo']),
+    ...mapActions([
+      'addTodo',
+      'updateTodo',
+      'updatePriority',
+      'deleteTodo',
+      'addComment',
+      'deleteComment',
+    ]),
 
     performAction({ action, payload }) {
       if (this[action] === undefined) {

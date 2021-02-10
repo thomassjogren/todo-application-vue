@@ -35,21 +35,26 @@ export default {
 
   beforeMount() {
     this.fetchTodos();
+    this.fetchComments();
   },
 
   methods: {
-    ...mapActions(['fetchTodos', 'addTodo', 'resetStorage']),
+    ...mapActions(['fetchTodos', 'fetchComments', 'addTodo', 'resetStorage']),
 
     save() {
-      this.addTodo({
-        title: this.title,
-        subtitle: this.subtitle,
-        priority: 0,
-        parent: null,
-      });
+      if (this.title !== '') {
+        this.addTodo({
+          title: this.title,
+          subtitle: this.subtitle,
+          priority: 0,
+          parent: null,
+          completed: false,
+        });
 
-      this.title = '';
-      this.subtitle = '';
+        this.title = '';
+        this.subtitle = '';
+        return;
+      }
     },
   },
 };
