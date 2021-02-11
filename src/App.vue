@@ -4,7 +4,7 @@
       <label for="title">Title</label>
       <input id="title" v-model="title" type="text" />
       <label for="subtitle">Subtitle</label>
-      <input id="subtitle" v-model="subtitle" />
+      <input id="subtitle" v-model="subtitle" type="text" />
       <button type="submit">Save</button>
     </form>
 

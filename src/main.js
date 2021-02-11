@@ -3,7 +3,7 @@ import App from './App.vue';
 import store from './store';
 
 import '@fortawesome/fontawesome-free/css/all.css';
-import 'bulma/css/bulma.min.css';
+import './assets/tailwind.css';
 
 Vue.config.productionTip = false;
 
