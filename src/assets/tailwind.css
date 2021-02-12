@@ -3,3 +3,7 @@
 @tailwind components;
 
 @tailwind utilities;
+
+.input {
+  @apply w-full bg-transparent py-0 px-8 pb-1 border-0 focus:ring-0 tracking-wide text-nord-aurora-2;
+}

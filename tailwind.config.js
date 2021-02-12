@@ -5,6 +5,26 @@ module.exports = {
   presets: [],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    extend: {
+      colors: {
+        'nord-1': '#4c566a',
+        'nord-2': '#434c5e',
+        'nord-3': '#3b4252',
+        'nord-4': '#2e3440',
+        'nord-snow-1': '#d8dee9',
+        'nord-snow-2': '#e5e9f0',
+        'nord-snow-3': '#eceff4',
+        'nord-frost-1': '#8fbcbb',
+        'nord-frost-2': '#88c0d0',
+        'nord-frost-3': '#81a1c1',
+        'nord-frost-4': '#5e81ac',
+        'nord-aurora-1': '#bdf616a',
+        'nord-aurora-2': '#d08770',
+        'nord-aurora-3': '#ebcb8b',
+        'nord-aurora-4': '#a3be8c',
+        'nord-aurora-5': '#b48ead',
+      },
+    },
     screens: {
       sm: '640px',
       md: '768px',
