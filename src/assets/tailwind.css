@@ -7,3 +7,24 @@
 .input {
   @apply w-full bg-transparent py-0 px-8 pb-1 border-0 focus:ring-0 tracking-wide text-nord-aurora-2;
 }
+
+.color-animation {
+  animation: colorchange 50s linear 1s infinite;
+  -webkit-animation: colorchange 50s linear 0s infinite alternate;
+}
+
+@keyframes colorchange {
+  0%  { color: #a3be8c; }
+  25% { color: #b48ead; }
+  50% { color: #bf616a; }
+  75% { color: #b08770; }
+  100% { color: #ebcb8b; }
+}
+
+@-webkit-keyframes colorchange {
+  0%  { color: #a3be8c; }
+  25% { color: #b48ead; }
+  50% { color: #bf616a; }
+  75% { color: #b08770; }
+  100% { color: #ebcb8b; }
+}

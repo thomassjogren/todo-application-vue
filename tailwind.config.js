@@ -18,7 +18,7 @@ module.exports = {
         'nord-frost-2': '#88c0d0',
         'nord-frost-3': '#81a1c1',
         'nord-frost-4': '#5e81ac',
-        'nord-aurora-1': '#bdf616a',
+        'nord-aurora-1': '#bf616a',
         'nord-aurora-2': '#d08770',
         'nord-aurora-3': '#ebcb8b',
         'nord-aurora-4': '#a3be8c',

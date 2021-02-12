@@ -1,6 +1,8 @@
 <template>
   <div id="app" class="relative flex items-center flex-col pb-20">
-    <h1 class="text-8xl py-16 tracking-wider font-extrabold" style="color: #88c0d0"><i class="fas fa-check" /> TODO</h1>
+    <h1 class="text-8xl py-16 tracking-wider font-extrabold" style="color: #88c0d0">
+      WHAT <i class="fas fa-check text-nord-aurora-4 color-animation" /> TODO
+    </h1>
     <div class="lg:w-1/2 w-full">
       <div class="bg-nord-3 mb-12 rounded-xl py-6 pr-8">
         <form class="flex items-center" @submit.prevent="save">
@@ -32,7 +34,7 @@
           <button
             type="submit"
             tabindex="3"
-            class="h-16 w-16 text-6xl transition-colors duration-500 text-nord-aurora-2 hover:text-nord-aurora-4"
+            class="h-16 w-16 text-6xl transition-colors duration-1000 text-nord-aurora-2 hover:text-nord-aurora-4"
           >
             <i class="fas fa-plus" />
           </button>
