@@ -9,6 +9,7 @@
               <label for="title" class="hidden">Title</label>
               <input
                 id="title"
+                ref="mainInput"
                 v-model="title"
                 type="text"
                 tabindex="1"
@@ -79,6 +80,10 @@ export default {
   beforeMount() {
     this.fetchTodos();
     this.fetchComments();
+  },
+
+  mounted() {
+    this.$refs.mainInput.focus();
   },
 
   methods: {
