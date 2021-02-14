@@ -8,6 +8,22 @@
   @apply w-full bg-transparent py-0 px-8 pb-1 border-0 focus:ring-0 tracking-wide text-nord-aurora-2;
 }
 
+.inline-input {
+  @apply w-full bg-transparent border-b border-nord-aurora-2 focus:ring-0;
+}
+
+.inline-input:focus-visible {
+  @apply outline-none;
+}
+
+.action-button {
+  @apply text-nord-1 hover:text-nord-frost-3 ml-2;
+}
+
+.ml-46 {
+  margin-left: 46px;
+}
+
 .color-animation {
   animation: colorchange 50s linear 1s infinite;
   -webkit-animation: colorchange 50s linear 0s infinite alternate;
