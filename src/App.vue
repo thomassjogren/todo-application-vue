@@ -40,15 +40,15 @@
           </button>
         </form>
       </div>
-      <div class="bg-nord-3 rounded-xl py-6 px-8">
+      <div class="bg-nord-3 rounded-xl py-0.5 px-8">
         <TodoList :todos="parents" />
 
-        <div v-if="showCompleted">
+        <!-- <div v-if="showCompleted">
           Completed
           <TodoList :todos="completed" />
         </div>
 
-        <button @click="showCompleted = !showCompleted">Toggle completed</button>
+        <button @click="showCompleted = !showCompleted">Toggle completed</button> -->
       </div>
     </div>
     <button class="absolute bottom-0 right-0 text-white p-2" @click="resetStorage">Reset Storage</button>
