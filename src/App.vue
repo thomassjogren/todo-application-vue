@@ -42,13 +42,21 @@
       </div>
       <div class="bg-nord-3 rounded-xl py-0.5 px-8">
         <TodoList :todos="parents" />
+      </div>
 
-        <!-- <div v-if="showCompleted">
-          Completed
-          <TodoList :todos="completed" />
-        </div>
-
-        <button @click="showCompleted = !showCompleted">Toggle completed</button> -->
+      <div class="flex justify-center">
+        <button class="mt-10" @click="showCompleted = !showCompleted">
+          <template v-if="showCompleted">
+            Hide completed
+          </template>
+          <template v-else>
+            Show completed
+          </template>
+        </button>
+      </div>
+      <div v-if="showCompleted" class="bg-nord-3 rounded-xl py-0.5 px-8 mt-10 flex flex-col items-center">
+        <div class="my-4 text-xl font-bold">Completed todos</div>
+        <TodoList :todos="completed" class="w-full" />
       </div>
     </div>
     <button class="absolute bottom-0 right-0 text-white p-2" @click="resetStorage">Reset Storage</button>

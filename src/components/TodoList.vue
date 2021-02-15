@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!todos.length" class="my-6 text-center text-xl text-gray-500">Nothing to do</div>
+  <div v-if="!todos.length" class="my-6 text-center text-xl text-gray-500">Nothing here!</div>
   <ul v-else>
     <TodoItem v-for="todo in todos" :key="todo.id" :todo="todo" @action="performAction" />
   </ul>
