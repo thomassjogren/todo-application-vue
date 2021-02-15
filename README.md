@@ -1,29 +1,15 @@
-# todo-assignment
+# What todo - An awesome todo application
 
-## Project setup
-```
-npm install
-```
+## TLDR;
 
-### Compiles and hot-reloads for development
+Simply navigate to the folder and run the following command
+
 ```
-npm run serve
+npm install && npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## General information
 
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+The application is build on top of the Vuejs JavaScrip framework and uses
+LocalStorage in order to store data. The UI is build with Tailwindcss and
+mostly uses the [https://www.nordtheme.com/](Nord) color scheme.
