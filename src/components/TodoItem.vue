@@ -1,7 +1,14 @@
 <template>
-  <li>
-    <div class="flex mt-7 mb-7">
-      <Checkbox :checked="todo.completed" :priority="todo.priority" @click="completeTodo(todo.id)" />
+  <li class="overflow-hidden my-6" :class="{ 'pb-2': expanded }">
+    <div class="flex mb-1" :class="{ 'mb-0': expanded }">
+      <Checkbox
+        :checked="todo.completed"
+        :priority="todo.priority"
+        :round="true"
+        :large="true"
+        :outlined="true"
+        @click="completeTodo(todo.id)"
+      />
       <div class="flex-grow">
         <input
           v-if="edit"
@@ -30,106 +37,142 @@
           <span v-else class="italic" @click="toggleEdit">{{ todo.subtitle }}</span>
         </div>
       </div>
-      <button v-if="!edit" class="action-button relative -top-2 mr-10 text-5xl h-8" title="Expand todo">
-        <i class="fas fa-angle-down h-8 hover:text-nord-frost-3" />
-      </button>
-      <div class="text-xl">
-        <select v-model="priority" class="h-6" @change="updatePriority">
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-        </select>
-        <button class="action-button" title="Delete todo" @click="deleteTodo(todo.id)">
-          <i class="fas fa-trash-alt" />
-        </button>
+      <div v-if="subTasks.total" class="text-gray-500 flex items-center mr-2 text-sm">
+        Tasks {{ subTasks.completed }} / {{ subTasks.total }}
       </div>
-    </div>
-
-    <div class="ml-46 my-10 w-1/2">
-      <div class="text-xl font-bold">
-        Sub tasks
-      </div>
-      <div class="pl-2 mt-3">
-        <ul>
-          <li v-for="subtask in todo.children" :key="subtask.id" class="mb-1 flex justify-between items-start">
-            <div class="flex items-top">
-              <input type="checkbox" :checked="subtask.completed" @click="completeTodo(subtask.id)" />
-              {{ subtask.title }}
-            </div>
-            <button class="ml-9 action-button" @click="deleteTodo(subtask.id)"><i class="fas fa-times" /></button>
-          </li>
-        </ul>
-        <div v-if="subTask" class="flex">
-          <label for="title" class="hidden">Title</label>
-          <input
-            id="title"
-            ref="subtaskInput"
-            v-model="subTitle"
-            class="inline-input"
-            placeholder="Task title"
-            @keyup.esc="cancelSubTask"
-            @keyup.enter="addSubTask"
-          />
-          <button class="ml-2 action-button" title="Add sub task" @click="addSubTask"><i class="fas fa-plus" /></button>
-          <button class="ml-2 action-button" title="Cancel" @click="cancelSubTask"><i class="fas fa-times" /></button>
-        </div>
-        <button
-          v-else
-          class="text-gray-500 hover:text-nord-frost-3 border-b border-transparent"
-          title="Add sub-task"
-          @click="addSubTask"
-        >
-          <i class="fas fa-plus" /> Add subtask
-        </button>
-      </div>
-    </div>
-
-    <div class="ml-46 my-10">
-      <div class="text-xl font-bold mt-4">Comments</div>
-      <div
-        v-for="comment in sortedComments"
-        :key="comment.id"
-        class="px-3 py-2 bg-nord-4 rounded-md my-3 flex flex-col"
+      <button
+        v-if="!edit"
+        class="action-button relative text-2xl flex items-center"
+        title="Expand todo"
+        @click="expanded = !expanded"
       >
-        <div class="text-gray-500 flex justify-between">
-          {{ formatDate(comment.timestamp) }}
-          <button
-            class="relative border-r border-transparent hover:text-nord-frost-3"
-            @click="deleteComment(comment.id)"
-          >
-            <i class="fas fa-times" />
-          </button>
-        </div>
-        {{ comment.content }}
-      </div>
-      <div class="relative">
-        <input
-          v-model="commentContent"
-          class="inline-input border py-2 px-4 rounded-md"
-          placeholder="Add a comment"
-          @keyup.enter="addComment"
+        <i
+          class="fas fa-angle-down h-8 hover:text-nord-frost-3 relative top-1"
+          :class="{ 'fa-expand-alt': !expanded, 'fa-compress-alt': expanded }"
         />
-        <button
-          class="absolute right-3 top-2 text-gray-500"
-          :class="{ 'text-nord-frost-3': commentContent !== '' }"
-          @click="addComment"
-        >
-          <i class="fas fa-plus" />
-        </button>
-      </div>
+      </button>
     </div>
+
+    <SlideDownTranstion>
+      <div v-if="expanded" ref="drawer" :style="drawerHeight">
+        <div class="flex justify-end  items-center px-3 mt-4">
+          <div class="ml-3 cursor-pointer" title="Normal priority" @click="updatePriority(0)">
+            <i class="fas fa-exclamation" />
+          </div>
+          <div class="ml-3 cursor-pointer text-nord-aurora-3" title="Medium priority" @click="updatePriority(1)">
+            <i class="fas fa-exclamation" /><i class="fas fa-exclamation" />
+          </div>
+          <div class="ml-3 cursor-pointer text-nord-aurora-1" title="High priority" @click="updatePriority(2)">
+            <i class="fas fa-exclamation" /><i class="fas fa-exclamation" /><i class="fas fa-exclamation" />
+          </div>
+          <div class="text-xl ml-4">
+            <button class="action-button" title="Delete todo" @click="deleteTodo(todo.id)">
+              <i class="fas fa-trash-alt" />
+            </button>
+          </div>
+        </div>
+
+        <div class="ml-46 mb-6">
+          <div class="text-xl font-bold">
+            Subtasks
+            <span v-if="subTasks.total" class="text-gray-500 text-sm"
+              >{{ subTasks.completed }} / {{ subTasks.total }}</span
+            >
+          </div>
+          <div class="mt-3">
+            <ul>
+              <li v-for="subtask in todo.children" :key="subtask.id" class="mb-1 flex justify-between items-start px-3">
+                <div class="flex items-top">
+                  <Checkbox :checked="subtask.completed" @click="completeTodo(subtask.id)">
+                    {{ subtask.title }}
+                  </Checkbox>
+                </div>
+                <button class="action-button" title="Delete subtask" @click="deleteTodo(subtask.id)">
+                  <i class="fas fa-times" />
+                </button>
+              </li>
+            </ul>
+            <div v-if="subTask" class="flex px-3">
+              <label for="title" class="hidden">Title</label>
+              <input
+                id="title"
+                ref="subtaskInput"
+                v-model="subTitle"
+                class="inline-input"
+                placeholder="Task title"
+                @keyup.esc="cancelSubTask"
+                @keyup.enter="addSubTask"
+              />
+              <button class="ml-2 action-button" title="Add sub task" @click="addSubTask">
+                <i class="fas fa-plus" />
+              </button>
+              <button class="ml-2 action-button" title="Cancel" @click="cancelSubTask">
+                <i class="fas fa-times" />
+              </button>
+            </div>
+            <button
+              v-else
+              class="text-gray-500 pl-3 hover:text-nord-frost-3 border-b border-transparent transition-colors duration-500"
+              title="Add subtask"
+              @click="addSubTask"
+            >
+              <i class="fas fa-plus" /> Add subtask
+            </button>
+          </div>
+        </div>
+
+        <div class="ml-46 my-6">
+          <div class="text-xl font-bold mt-4">Comments</div>
+          <div
+            v-for="comment in sortedComments"
+            :key="comment.id"
+            class="px-3 py-2 bg-nord-4 rounded-md my-3 flex flex-col"
+          >
+            <div class="text-gray-500 flex justify-between">
+              {{ formatDate(comment.timestamp) }}
+              <button
+                title="Delete comment"
+                class="action-button relative border-r border-transparent"
+                @click="deleteComment(comment.id)"
+              >
+                <i class="fas fa-times" />
+              </button>
+            </div>
+            {{ comment.content }}
+          </div>
+          <div class="relative mt-3">
+            <input
+              v-model="commentContent"
+              class="inline-input border py-2 px-4 rounded-md"
+              placeholder="Add a comment"
+              @keyup.enter="addComment"
+            />
+            <button
+              class="absolute right-3 top-2 text-gray-500"
+              :class="{ 'text-nord-frost-3': commentContent !== '' }"
+              title="Add comment"
+              @click="addComment"
+            >
+              <i class="fas fa-plus" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </SlideDownTranstion>
   </li>
 </template>
 
 <script>
 import format from 'date-fns/format';
 import Checkbox from '@/components/Checkbox';
+import SlideDownTranstion from '@/components/SlideDownTranstion';
 
 export default {
   name: 'TodoItem',
 
   components: {
     Checkbox,
+    SlideDownTranstion,
   },
 
   props: {
@@ -141,6 +184,7 @@ export default {
 
   data() {
     return {
+      expanded: false,
       edit: false,
       subTask: false,
 
@@ -154,7 +198,7 @@ export default {
 
       commentContent: '',
 
-      priority: this.todo.priority,
+      expandedHeight: false,
     };
   },
 
@@ -172,7 +216,20 @@ export default {
     },
 
     subTasks() {
-      return this.todo.children.length;
+      if (this.todo.children.length) {
+        return {
+          completed: this.todo.children.filter(t => t.completed).length,
+          total: this.todo.children.length,
+        };
+      }
+      return false;
+    },
+
+    drawerHeight() {
+      if (!this.expandedHeight) {
+        return;
+      }
+      return `height: ${this.expandedHeight}`;
     },
   },
 
@@ -194,13 +251,13 @@ export default {
       }
       this.edit = !this.edit;
 
-      this.$nextTick(() => {
-        if (this.edit) {
+      if (this.edit) {
+        this.$nextTick(() => {
           this.tmpTitle = this.title;
           this.tmpSubtitle = this.subtitle;
           this.$refs.titleInput.focus();
-        }
-      });
+        });
+      }
     },
 
     cancelEdit() {
@@ -234,14 +291,17 @@ export default {
             completed: false,
           },
         });
+        this.expandedHeight = `${this.$refs.drawer.scrollHeight + 33}px`;
         this.subTitle = '';
         this.subSubtitle = '';
       }
       this.subTask = !this.subTask;
 
-      this.$nextTick(() => {
-        this.$refs.subtaskInput.focus();
-      });
+      if (this.subTask) {
+        this.$nextTick(() => {
+          this.$refs.subtaskInput.focus();
+        });
+      }
     },
 
     cancelSubTask() {
@@ -258,6 +318,7 @@ export default {
             content: this.commentContent,
           },
         });
+        this.expandedHeight = `${this.$refs.drawer.scrollHeight + 76}px`;
         this.commentContent = '';
       }
     },
@@ -270,6 +331,9 @@ export default {
           convertChildren: false,
         },
       });
+      if (this.expanded) {
+        this.expandedHeight = `${this.$refs.drawer.scrollHeight - 33}px`;
+      }
     },
 
     deleteComment(id) {
@@ -277,14 +341,15 @@ export default {
         action: 'deleteComment',
         payload: id,
       });
+      this.expandedHeight = `${this.$refs.drawer.scrollHeight - 76}px`;
     },
 
-    updatePriority() {
+    updatePriority(priority) {
       this.$emit('action', {
         action: 'updatePriority',
         payload: {
           id: this.todo.id,
-          priority: this.priority,
+          priority,
         },
       });
     },

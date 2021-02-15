@@ -6,17 +6,20 @@
       v-bind="attrs"
       :disabled="props.disabled"
       type="checkbox"
-      v-on="{ ...listeners, input: $event => listeners.input($event.target.checked) }"
+      v-on="listeners"
     />
     <span
       class="checkbox"
       :class="{
-        'prio-2': props.priority === '2',
-        'prio-1': props.priority === '1',
-        'prio-0': props.priority === '0',
+        'prio-2': props.priority === 2,
+        'prio-1': props.priority === 1,
+        'prio-0': props.priority === 0,
+        round: props.round,
+        large: props.large,
+        outlined: props.outlined,
       }"
     />
-    {{ props.label }}
+    <slot>{{ props.label }}</slot>
   </label>
 </template>
 
@@ -26,10 +29,9 @@
   display: block;
   position: relative;
   padding-left: 25px;
-  margin-bottom: 12px;
+  margin-bottom: 5px;
   margin-right: 10px;
   cursor: pointer;
-  font-size: 14px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -52,12 +54,27 @@
   .checkbox {
     position: absolute;
     left: 0;
+    top: 3px;
     margin: 0;
-    height: 36px;
-    width: 36px;
-    border: 4px solid;
-    border-radius: 50%;
+    height: 18px;
+    width: 18px;
     transition: background-color border-color 0.3s ease;
+    @apply bg-nord-snow-1;
+
+    &.round {
+      border-radius: 50%;
+    }
+
+    &.large {
+      top: 0;
+      height: 36px;
+      width: 36px;
+    }
+
+    &.outlined {
+      background-color: transparent;
+      border: 4px solid white;
+    }
 
     &.prio-0 {
       @apply border-white;
@@ -75,21 +92,35 @@
       content: '';
       position: absolute;
       display: none;
-      left: 9px;
-      top: 3px;
-      width: 10px;
-      height: 18px;
+      left: 6px;
+      top: 2px;
+      width: 6px;
+      height: 11px;
       border: solid white;
-      border-width: 0 4px 4px 0;
+      border-width: 0 2px 2px 0;
       -webkit-transform: rotate(45deg);
       -ms-transform: rotate(45deg);
       transform: rotate(45deg);
     }
+
+    &.large:after {
+      left: 9px;
+      top: 3px;
+      width: 10px;
+      height: 18px;
+      border-width: 0 4px 4px 0;
+    }
   }
 
   &:hover input ~ .checkbox {
+    @apply bg-nord-aurora-4;
+    transition: background-color 0.5s ease;
+  }
+
+  &:hover input ~ .checkbox.large {
+    background-color: transparent;
     border-color: #a3be8c;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.5s ease;
   }
 
   input:checked ~ .checkbox:after {
