@@ -12,4 +12,4 @@ npm install && npm run serve
 
 The application is build on top of the Vuejs JavaScrip framework and uses
 LocalStorage in order to store data. The UI is build with Tailwindcss and
-mostly uses the [https://www.nordtheme.com/](Nord) color scheme.
+mostly uses the Nord(https://www.nordtheme.com/) color scheme.
