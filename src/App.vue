@@ -75,13 +75,11 @@ export default {
     TodoList,
   },
 
-  data() {
-    return {
-      title: '',
-      subtitle: '',
-      showCompleted: false,
-    };
-  },
+  data: () => ({
+    title: '',
+    subtitle: '',
+    showCompleted: false,
+  }),
 
   computed: {
     ...mapGetters(['parents', 'completed']),
