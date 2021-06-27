@@ -182,23 +182,25 @@ export default {
     },
   },
 
-  data: () => ({
-    expanded: false,
-    edit: false,
-    subTask: false,
+  data() {
+    return {
+      expanded: false,
+      edit: false,
+      subTask: false,
 
-    title: this.todo.title,
-    subtitle: this.todo.subtitle,
+      title: this.todo.title,
+      subtitle: this.todo.subtitle,
 
-    tmpTitle: '',
-    tmpSubtitle: '',
+      tmpTitle: '',
+      tmpSubtitle: '',
 
-    subTitle: '',
+      subTitle: '',
 
-    commentContent: '',
+      commentContent: '',
 
-    expandedHeight: false,
-  }),
+      expandedHeight: false,
+    };
+  },
 
   computed: {
     formatDate() {

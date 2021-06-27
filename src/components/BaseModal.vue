@@ -104,7 +104,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped>
 .base-modal {
   align-items: flex-start;
   display: flex;
@@ -138,10 +138,8 @@ export default {
   z-index: 1051;
 }
 
-.base-modal__content {
-  h4 {
-    margin-top: 0;
-  }
+.base-modal__content h4 {
+  margin-top: 0;
 }
 
 .base-modal__title {
@@ -180,12 +178,12 @@ export default {
   transition: color 0.2s;
   width: 26px;
   z-index: 100;
+}
 
-  &:hover,
-  &:focus {
-    border: none;
-    color: #7f7f7f;
-    transition: color 0.2s;
-  }
+.close-button:hover,
+.close-button:focus {
+  border: none;
+  color: #7f7f7f;
+  transition: color 0.2s;
 }
 </style>
